@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import AuthSuccess from "./pages/AuthSuccess";
 import Dashboard from "./pages/Dashboard";
 import QuestionBank from "./pages/QuestionBank";
 import QuestionDetail from "./pages/QuestionDetail";
@@ -45,6 +46,7 @@ const App = () => {
               </ProtectedRoute>
             }
           />
+          <Route path="/auth/success" element={<AuthSuccess />} />
           <Route
             path="/daily"
             element={

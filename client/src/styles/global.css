@@ -222,11 +222,15 @@ a {
   display: flex;
   align-items: center;
   justify-content: center;
+  background: white; /* make the right column white like the design */
+  border-radius: 12px;
+  padding: 18px;
 }
 .auth-card {
   width: 100%;
   max-width: 420px;
-  padding: 28px;
+  padding: 0; /* remove extra padding because hero-right provides it */
+  background: transparent;
 }
 .auth-subtitle {
   font-size: 0.95rem;
@@ -256,6 +260,58 @@ a {
   }
   .hero-left { order: -1; }
   .hero-image { max-width: 100%; }
+}
+
+/* Auth form extras */
+.input-with-icon {
+  position: relative;
+}
+.input-with-icon .input {
+  padding-right: 44px;
+}
+.input-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #6b7280;
+}
+.btn-icon {
+  background: transparent;
+  border: none;
+  padding: 6px;
+  cursor: pointer;
+}
+.forgot-wrap { text-align: right; margin-top: 6px; }
+.forgot-link { color: #fb7185; font-size: 0.9rem; text-decoration: none; }
+
+.primary-btn {
+  width: 100%;
+  background: linear-gradient(90deg,#3b82f6,#06b6d4);
+  color: white;
+  padding: 12px 16px;
+  border-radius: 10px;
+  font-weight: 700;
+  box-shadow: 0 8px 30px rgba(3,7,18,0.2);
+  border: none;
+}
+.divider { display:flex; align-items:center; gap:12px; margin: 12px 0; }
+.divider::before, .divider::after { content: ''; flex:1; height:1px; background: #e6eefb33; }
+.divider span { padding: 0 12px; color: #9aa9c6; font-size: 0.9rem; }
+.socials { display:flex; flex-direction:column; gap:10px; }
+.social-btn { display:flex; align-items:center; gap:12px; width:100%; padding:10px 12px; border-radius:8px; background:white; border:1px solid #e6eefb55; font-weight:600; }
+.social-icon { display:inline-flex; width:28px; height:28px; align-items:center; justify-content:center; border-radius:6px; background:#f3f4f6; color:#111827; font-weight:700; }
+
+/* Card styling to match image: white card on right */
+.auth-card { background: white; color: #0f172a; }
+.auth-card h2 { font-size: 2rem; margin-bottom: 6px; }
+.auth-card .input { background: #ffffff; border: 1px solid #e6eefb44; color: #0f172a; }
+
+@media (max-width: 600px) {
+  .auth-card h2 { font-size: 1.6rem; }
 }
 
 /* QuestionCard inner styles moved from inline styles */

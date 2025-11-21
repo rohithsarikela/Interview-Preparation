@@ -2,6 +2,8 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import morgan from "morgan";
+import passport from "passport";
+import setupPassport from "./config/passport.js";
 import connectDB from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import questionRoutes from "./routes/questionRoutes.js";
@@ -19,6 +21,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(cors());
+
+// passport
+app.use(passport.initialize());
+setupPassport();
 
 if (process.env.NODE_ENV !== "production") {
   app.use(morgan("dev"));
