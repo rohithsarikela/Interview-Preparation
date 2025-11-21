@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
+import heroImg from "../assets/image.png";
 
 const Register = () => {
   const { register, loading } = useAuth();
@@ -30,52 +31,58 @@ const Register = () => {
   };
 
   return (
-    <div className="main-content">
-      <div className="card" style={{ maxWidth: "420px", margin: "2rem auto" }}>
-        <h2>Create Account</h2>
-        <p style={{ fontSize: "0.9rem", opacity: 0.8, marginTop: "0.25rem" }}>
-          Start solving questions and track your interview readiness.
-        </p>
-        <form onSubmit={handleSubmit} style={{ marginTop: "1rem", display: "grid", gap: "0.75rem" }}>
-          <div>
-            <label style={{ fontSize: "0.85rem" }}>Name</label>
-            <input
-              className="input"
-              name="name"
-              value={form.name}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div>
-            <label style={{ fontSize: "0.85rem" }}>Email</label>
-            <input
-              className="input"
-              type="email"
-              name="email"
-              value={form.email}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div>
-            <label style={{ fontSize: "0.85rem" }}>Password</label>
-            <input
-              className="input"
-              type="password"
-              name="password"
-              value={form.password}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <button className="btn" type="submit" disabled={loading}>
-            {loading ? "Creating..." : "Sign Up"}
-          </button>
-        </form>
-        <p style={{ marginTop: "1rem", fontSize: "0.85rem" }}>
-          Already have an account? <Link to="/login">Login</Link>
-        </p>
+    <div className="auth-hero">
+      <div className="hero-left">
+        <img src={heroImg} alt="Hero" className="hero-image" />
+      </div>
+
+      <div className="hero-right">
+        <div className="card auth-card">
+          <h2>Create Account</h2>
+          <p className="auth-subtitle">Start solving questions and track your interview readiness.</p>
+
+          <form onSubmit={handleSubmit} className="auth-form">
+            <div>
+              <label className="label">Name</label>
+              <input
+                className="input"
+                name="name"
+                value={form.name}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div>
+              <label className="label">Email</label>
+              <input
+                className="input"
+                type="email"
+                name="email"
+                value={form.email}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div>
+              <label className="label">Password</label>
+              <input
+                className="input"
+                type="password"
+                name="password"
+                value={form.password}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <button className="btn" type="submit" disabled={loading}>
+              {loading ? "Creating..." : "Sign Up"}
+            </button>
+          </form>
+
+          <p className="auth-footer">
+            Already have an account? <Link to="/login">Login</Link>
+          </p>
+        </div>
       </div>
     </div>
   );
