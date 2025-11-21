@@ -301,9 +301,6 @@ a {
 .divider { display:flex; align-items:center; gap:12px; margin: 12px 0; }
 .divider::before, .divider::after { content: ''; flex:1; height:1px; background: #e6eefb33; }
 .divider span { padding: 0 12px; color: #9aa9c6; font-size: 0.9rem; }
-.socials { display:flex; flex-direction:column; gap:10px; }
-.social-btn { display:flex; align-items:center; gap:12px; width:100%; padding:10px 12px; border-radius:8px; background:white; border:1px solid #e6eefb55; font-weight:600; }
-.social-icon { display:inline-flex; width:28px; height:28px; align-items:center; justify-content:center; border-radius:6px; background:#f3f4f6; color:#111827; font-weight:700; }
 
 /* Card styling to match image: white card on right */
 .auth-card { background: white; color: #0f172a; }
@@ -347,9 +344,6 @@ a {
 .divider { display:flex; align-items:center; gap:12px; margin:18px 0; }
 .divider::before, .divider::after { content:''; flex:1; height:1px; background:#eef3fb; }
 .divider span { padding:0 10px; color:#9aa9c6; font-size:13px; }
-.social-list { display:flex; flex-direction:column; gap:10px; }
-.social-btn { display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:8px; border:1px solid #eef3fb; background:white; cursor:pointer; font-weight:600; color:#0b1222; }
-.social-left { width:34px; height:34px; display:inline-flex; align-items:center; justify-content:center; border-radius:6px; background:#f3f4f6; }
 .auth-switch { margin-top:12px; color:#6b7280; font-size:14px; text-align:center; }
 
 @media (max-width: 980px) {

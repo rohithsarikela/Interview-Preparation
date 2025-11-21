@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
 import heroImg from "../assets/image.png";
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 const Login = () => {
   const { login, loading } = useAuth();
@@ -82,24 +81,7 @@ const Login = () => {
 
             <button className="btn-login" type="submit" disabled={loading}>{loading ? 'Logging in...' : 'Log In'}</button>
 
-            <div className="divider"><span>Or</span></div>
-
-            <div className="social-list">
-              <a className="social-btn" href={`${API_BASE}/api/auth/google`}>
-                <span className="social-left">G</span>
-                Continue with Google
-              </a>
-
-              <a className="social-btn" href={`${API_BASE}/api/auth/apple`}>
-                <span className="social-left"></span>
-                Continue with Apple
-              </a>
-
-              <a className="social-btn" href={`${API_BASE}/api/auth/facebook`}>
-                <span className="social-left">f</span>
-                Continue with Facebook
-              </a>
-            </div>
+            
 
             <p className="auth-switch">New here? <Link to="/register">Create an account</Link></p>
           </form>
