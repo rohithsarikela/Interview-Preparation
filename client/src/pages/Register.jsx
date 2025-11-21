@@ -75,9 +75,9 @@ const Register = () => {
             <div className="divider"><span>Or</span></div>
 
             <div className="social-list">
-              <button type="button" className="social-btn" onClick={() => { window.location.href = `${API_BASE}/api/auth/google`; }}><span className="social-left">G</span>Continue with Google</button>
-              <button type="button" className="social-btn" onClick={() => { window.location.href = `${API_BASE}/api/auth/apple`; }}><span className="social-left"></span>Continue with Apple</button>
-              <button type="button" className="social-btn" onClick={() => { window.location.href = `${API_BASE}/api/auth/facebook`; }}><span className="social-left">f</span>Continue with Facebook</button>
+              <a className="social-btn" href={`${API_BASE}/api/auth/google`}><span className="social-left">G</span>Continue with Google</a>
+              <a className="social-btn" href={`${API_BASE}/api/auth/apple`}><span className="social-left"></span>Continue with Apple</a>
+              <a className="social-btn" href={`${API_BASE}/api/auth/facebook`}><span className="social-left">f</span>Continue with Facebook</a>
             </div>
 
             <p className="auth-switch">Already have an account? <Link to="/login">Sign In</Link></p>

@@ -85,20 +85,20 @@ const Login = () => {
             <div className="divider"><span>Or</span></div>
 
             <div className="social-list">
-              <button type="button" className="social-btn" onClick={() => { window.location.href = `${API_BASE}/api/auth/google`; }}>
+              <a className="social-btn" href={`${API_BASE}/api/auth/google`}>
                 <span className="social-left">G</span>
                 Continue with Google
-              </button>
+              </a>
 
-              <button type="button" className="social-btn" onClick={() => { window.location.href = `${API_BASE}/api/auth/apple`; }}>
+              <a className="social-btn" href={`${API_BASE}/api/auth/apple`}>
                 <span className="social-left"></span>
                 Continue with Apple
-              </button>
+              </a>
 
-              <button type="button" className="social-btn" onClick={() => { window.location.href = `${API_BASE}/api/auth/facebook`; }}>
+              <a className="social-btn" href={`${API_BASE}/api/auth/facebook`}>
                 <span className="social-left">f</span>
                 Continue with Facebook
-              </button>
+              </a>
             </div>
 
             <p className="auth-switch">New here? <Link to="/register">Create an account</Link></p>
