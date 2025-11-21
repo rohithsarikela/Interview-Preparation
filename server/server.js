@@ -26,6 +26,9 @@ app.use(cors());
 app.use(passport.initialize());
 setupPassport();
 
+// avoid 404 for favicon requests (prevents noisy console errors during redirects)
+app.get('/favicon.ico', (req, res) => res.status(204).end());
+
 if (process.env.NODE_ENV !== "production") {
   app.use(morgan("dev"));
 }
