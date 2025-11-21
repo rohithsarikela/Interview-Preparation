@@ -9,17 +9,30 @@ import DailyChallenge from "./pages/DailyChallenge";
 import MockInterview from "./pages/MockInterview";
 import Profile from "./pages/Profile";
 import ProtectedRoute from "./components/ProtectedRoute";
+import CodingPlayground from "./pages/CodingPlayground";
+import QuestionSolvePage from "./pages/QuestionSolvePage";
+
+import { useAuth } from "./context/AuthContext";
 
 const App = () => {
+  const { user, authReady } = useAuth();
+
   return (
     <div className="app-container">
       <BrowserRouter>
-        <Navbar />
+
+        {/* ✅ Navbar only appears AFTER auth loads + user exists */}
+        {authReady && user && <Navbar />}
+
         <Routes>
+          {/* Redirect root to login */}
           <Route path="/" element={<Navigate to="/login" replace />} />
+
+          {/* Public routes */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
+          {/* Protected routes */}
           <Route
             path="/dashboard"
             element={
@@ -37,6 +50,7 @@ const App = () => {
               </ProtectedRoute>
             }
           />
+
           <Route
             path="/questions/:id"
             element={
@@ -45,7 +59,7 @@ const App = () => {
               </ProtectedRoute>
             }
           />
-          {/* Auth success route removed (no social OAuth) */}
+
           <Route
             path="/daily"
             element={
@@ -54,6 +68,7 @@ const App = () => {
               </ProtectedRoute>
             }
           />
+
           <Route
             path="/mock"
             element={
@@ -62,6 +77,7 @@ const App = () => {
               </ProtectedRoute>
             }
           />
+
           <Route
             path="/profile"
             element={
@@ -70,7 +86,20 @@ const App = () => {
               </ProtectedRoute>
             }
           />
+          <Route
+  path="/solve/:id"
+  element={
+    <ProtectedRoute>
+      <QuestionSolvePage />
+    </ProtectedRoute>
+  }
+/>
 
+
+          {/* Public coding page */}
+          <Route path="/playground" element={<CodingPlayground />} />
+
+          {/* 404 */}
           <Route path="*" element={<div className="main-content">404</div>} />
         </Routes>
       </BrowserRouter>

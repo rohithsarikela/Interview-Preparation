@@ -7,32 +7,76 @@ import { protect } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-// GET /api/questions
-// ?category=&difficulty=&search=
+/* =========================================================
+   GET ALL QUESTIONS
+   /api/questions
+   Supports: category, difficulty, search
+========================================================= */
 router.get("/", async (req, res) => {
   const { category, difficulty, search } = req.query;
   const filter = { isApproved: true };
 
   if (category) filter.category = category;
   if (difficulty) filter.difficulty = difficulty;
-  if (search) {
-    filter.title = { $regex: search, $options: "i" };
-  }
+  if (search) filter.title = { $regex: search, $options: "i" };
 
   const questions = await Question.find(filter).sort({ createdAt: -1 });
   res.json(questions);
 });
 
-// GET /api/questions/:id
+/* =========================================================
+   DAILY QUESTION — MUST BE BEFORE /:id !!!
+   /api/questions/daily/today
+========================================================= */
+router.get("/daily/today", protect, async (req, res) => {
+  const user = await User.findById(req.user._id);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  // If user already got today's daily question
+  if (
+    user.stats.lastDailyQuestion &&
+    user.stats.lastDailyQuestion.date &&
+    new Date(user.stats.lastDailyQuestion.date).getTime() === today.getTime()
+  ) {
+    const q = await Question.findById(user.stats.lastDailyQuestion.question);
+    return res.json({ question: q, reused: true });
+  }
+
+  // Pick a random question
+  const count = await Question.countDocuments({ isApproved: true });
+  if (count === 0) {
+    return res.status(404).json({ message: "No questions available" });
+  }
+
+  const randomIndex = Math.floor(Math.random() * count);
+  const [randomQuestion] = await Question.find({ isApproved: true })
+    .skip(randomIndex)
+    .limit(1);
+
+  // Save in user stats
+  user.stats.lastDailyQuestion = {
+    question: randomQuestion._id,
+    date: today,
+  };
+  await user.save();
+
+  res.json({ question: randomQuestion, reused: false });
+});
+
+/* =========================================================
+   GET SINGLE QUESTION — MUST BE LAST
+   /api/questions/:id
+========================================================= */
 router.get("/:id", async (req, res) => {
   const q = await Question.findById(req.params.id);
-  if (!q) {
-    return res.status(404).json({ message: "Question not found" });
-  }
+  if (!q) return res.status(404).json({ message: "Question not found" });
   res.json(q);
 });
 
-// POST /api/questions (user-submitted)
+/* =========================================================
+   CREATE QUESTION (USER SUBMISSION)
+========================================================= */
 router.post(
   "/",
   protect,
@@ -40,7 +84,7 @@ router.post(
     body("title").notEmpty(),
     body("description").notEmpty(),
     body("category").notEmpty(),
-    body("difficulty").isIn(["Easy", "Medium", "Hard"])
+    body("difficulty").isIn(["Easy", "Medium", "Hard"]),
   ],
   async (req, res) => {
     const errors = validationResult(req);
@@ -59,16 +103,18 @@ router.post(
       tags: tags || [],
       hints: hints || [],
       solution: solution || "",
-      createdBy: req.user._id
+      createdBy: req.user._id,
     });
 
     res.status(201).json(question);
   }
 );
 
-// POST /api/questions/:id/vote
+/* =========================================================
+   VOTING
+========================================================= */
 router.post("/:id/vote", protect, async (req, res) => {
-  const { value } = req.body; // 1 or -1
+  const { value } = req.body;
 
   if (![1, -1].includes(value)) {
     return res.status(400).json({ message: "Invalid vote value" });
@@ -77,14 +123,15 @@ router.post("/:id/vote", protect, async (req, res) => {
   const q = await Question.findById(req.params.id);
   if (!q) return res.status(404).json({ message: "Question not found" });
 
-  if (value === 1) q.upvotes += 1;
-  else q.downvotes += 1;
-
+  value === 1 ? q.upvotes++ : q.downvotes++;
   await q.save();
+
   res.json({ upvotes: q.upvotes, downvotes: q.downvotes, score: q.score });
 });
 
-// POST /api/questions/:id/bookmark
+/* =========================================================
+   BOOKMARK
+========================================================= */
 router.post("/:id/bookmark", protect, async (req, res) => {
   const user = await User.findById(req.user._id);
   const qId = req.params.id;
@@ -97,7 +144,6 @@ router.post("/:id/bookmark", protect, async (req, res) => {
   res.json({ bookmarks: user.bookmarks });
 });
 
-// DELETE /api/questions/:id/bookmark
 router.delete("/:id/bookmark", protect, async (req, res) => {
   const user = await User.findById(req.user._id);
   const qId = req.params.id;
@@ -110,61 +156,23 @@ router.delete("/:id/bookmark", protect, async (req, res) => {
   res.json({ bookmarks: user.bookmarks });
 });
 
-// GET /api/questions/daily
-router.get("/daily/today", protect, async (req, res) => {
-  const user = await User.findById(req.user._id);
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  if (
-    user.stats.lastDailyQuestion &&
-    user.stats.lastDailyQuestion.date &&
-    new Date(user.stats.lastDailyQuestion.date).getTime() === today.getTime()
-  ) {
-    const q = await Question.findById(user.stats.lastDailyQuestion.question);
-    return res.json({ question: q, reused: true });
-  }
-
-  const count = await Question.countDocuments({ isApproved: true });
-  if (count === 0) {
-    return res.status(404).json({ message: "No questions available" });
-  }
-
-  const randomIndex = Math.floor(Math.random() * count);
-  const [randomQuestion] = await Question.find({ isApproved: true })
-    .skip(randomIndex)
-    .limit(1);
-
-  user.stats.lastDailyQuestion = {
-    question: randomQuestion._id,
-    date: today
-  };
-  await user.save();
-
-  res.json({ question: randomQuestion, reused: false });
-});
-
-// POST /api/questions/:id/submit-session
+/* =========================================================
+   SUBMIT SESSION
+========================================================= */
 router.post("/:id/submit-session", protect, async (req, res) => {
   const { status, timeTaken, notes } = req.body;
-  const questionId = req.params.id;
 
   const session = await PracticeSession.create({
     user: req.user._id,
-    question: questionId,
+    question: req.params.id,
     status: status || "attempted",
     timeTaken: timeTaken || 0,
-    notes: notes || ""
+    notes: notes || "",
   });
 
   const user = await User.findById(req.user._id);
-
   user.stats.totalAttempts += 1;
-  if (status === "solved") {
-    user.stats.totalSolved += 1;
-  }
-
-  // Optional: update perTopic stats later if needed
+  if (status === "solved") user.stats.totalSolved += 1;
 
   await user.save();
 

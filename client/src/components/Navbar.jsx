@@ -1,15 +1,34 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useEffect, useState } from "react";
 
 const Navbar = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const [theme, setTheme] = useState(() => {
+    try {
+      return localStorage.getItem("theme") || "light";
+    } catch {
+      return "light";
+    }
+  });
 
   // hide navbar on auth pages
   if (location.pathname === "/login" || location.pathname === "/register" || location.pathname.startsWith("/auth")) {
     return null;
   }
+
+  useEffect(() => {
+    const root = document.documentElement;
+    root.classList.remove("theme-light", "theme-dark");
+    root.classList.add(theme === "dark" ? "theme-dark" : "theme-light");
+    try {
+      localStorage.setItem("theme", theme);
+    } catch {}
+  }, [theme]);
+
+  const toggleTheme = () => setTheme((t) => (t === "dark" ? "light" : "dark"));
 
   const handleLogout = () => {
     logout();
@@ -17,57 +36,35 @@ const Navbar = () => {
   };
 
   return (
-    <nav
-      style={{
-        borderBottom: "1px solid #1f2937",
-        padding: "0.75rem 1rem",
-        backdropFilter: "blur(16px)",
-        position: "sticky",
-        top: 0,
-        zIndex: 10,
-        background: "rgba(15,23,42,0.9)"
-      }}
-    >
-      <div
-        style={{
-          maxWidth: "1024px",
-          margin: "0 auto",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between"
-        }}
-      >
-        <Link to={user ? "/dashboard" : "/"} style={{ fontWeight: 700, fontSize: "1.1rem" }}>
-          <span style={{ color: "#60a5fa" }}>Interview</span>Prep
+    <nav className="app-navbar">
+      <div className="navbar-inner">
+        <Link to={user ? "/dashboard" : "/"} className="brand">
+          <span className="brand-accent">Interview</span>Prep
         </Link>
 
-        <div style={{ display: "flex", gap: "0.75rem", alignItems: "center" }}>
+        <div className="nav-actions">
+          <button className="theme-toggle" onClick={toggleTheme} aria-label="Toggle theme">
+            {theme === "dark" ? "🌙" : "☀️"}
+          </button>
+
           {user && (
             <>
-              <Link to="/questions">Questions</Link>
-              <Link to="/daily">Daily Challenge</Link>
-              <Link to="/mock">Mock Interview</Link>
-              <Link to="/profile">Profile</Link>
+              <Link to="/questions" className="nav-link">Questions</Link>
+              <Link to="/daily" className="nav-link">Daily</Link>
+              <Link to="/mock" className="nav-link">Mock</Link>
+              <Link to="/profile" className="nav-link">Profile</Link>
             </>
           )}
 
           {user ? (
             <>
-              <span style={{ fontSize: "0.9rem", opacity: 0.8 }}>
-                {user.name}
-              </span>
-              <button className="btn btn-secondary" onClick={handleLogout}>
-                Logout
-              </button>
+              <span className="nav-username">{user.name}</span>
+              <button className="btn btn-ghost" onClick={handleLogout}>Logout</button>
             </>
           ) : (
             <>
-              <Link to="/login" className="btn btn-secondary">
-                Login
-              </Link>
-              <Link to="/register" className="btn">
-                Sign Up
-              </Link>
+              <Link to="/login" className="btn btn-ghost">Login</Link>
+              <Link to="/register" className="btn">Sign Up</Link>
             </>
           )}
         </div>

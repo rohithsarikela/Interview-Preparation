@@ -12,15 +12,24 @@ export const AuthProvider = ({ children }) => {
 
   const [token, setToken] = useState(() => localStorage.getItem("token"));
   const [loading, setLoading] = useState(false);
+  const [authReady, setAuthReady] = useState(false);
 
+  // -----------------------------
+  // LOGIN
+  // -----------------------------
   const login = async (email, password) => {
     setLoading(true);
     try {
       const { data } = await api.post("/api/auth/login", { email, password });
-      setUser({ _id: data._id, name: data.name, email: data.email });
+
+      const userData = { _id: data._id, name: data.name, email: data.email };
+
+      setUser(userData);
       setToken(data.token);
-      localStorage.setItem("user", JSON.stringify({ _id: data._id, name: data.name, email: data.email }));
+
+      localStorage.setItem("user", JSON.stringify(userData));
       localStorage.setItem("token", data.token);
+
       toast.success("Logged in successfully");
     } catch (err) {
       toast.error(err.response?.data?.message || "Login failed");
@@ -30,18 +39,26 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // -----------------------------
+  // REGISTER
+  // -----------------------------
   const register = async (name, email, password) => {
     setLoading(true);
     try {
       const { data } = await api.post("/api/auth/register", {
         name,
         email,
-        password
+        password,
       });
-      setUser({ _id: data._id, name: data.name, email: data.email });
+
+      const userData = { _id: data._id, name: data.name, email: data.email };
+
+      setUser(userData);
       setToken(data.token);
-      localStorage.setItem("user", JSON.stringify({ _id: data._id, name: data.name, email: data.email }));
+
+      localStorage.setItem("user", JSON.stringify(userData));
       localStorage.setItem("token", data.token);
+
       toast.success("Registered successfully");
     } catch (err) {
       const msg =
@@ -55,6 +72,9 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // -----------------------------
+  // LOGOUT
+  // -----------------------------
   const logout = () => {
     setUser(null);
     setToken(null);
@@ -63,7 +83,54 @@ export const AuthProvider = ({ children }) => {
     toast.success("Logged out");
   };
 
-  const value = { user, token, loading, login, register, logout };
+  // -----------------------------
+  // TOKEN VERIFICATION ON FIRST LOAD
+  // -----------------------------
+  useEffect(() => {
+    let mounted = true;
+
+    const init = async () => {
+      const existingToken = localStorage.getItem("token");
+
+      // No token stored → directly mark auth as ready
+      if (!existingToken) {
+        if (mounted) setAuthReady(true);
+        return;
+      }
+
+      try {
+        const { data } = await api.get("/api/auth/me");
+        if (mounted) {
+          const userData = {
+            _id: data._id,
+            name: data.name,
+            email: data.email,
+          };
+
+          setUser(userData);
+          setToken(existingToken);
+        }
+      } catch (err) {
+        // Invalid/expired token → clear everything
+        if (mounted) {
+          setUser(null);
+          setToken(null);
+          localStorage.removeItem("user");
+          localStorage.removeItem("token");
+        }
+      } finally {
+        if (mounted) setAuthReady(true); // Mark auth system ready
+      }
+    };
+
+    init();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const value = { user, token, loading, authReady, login, register, logout };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

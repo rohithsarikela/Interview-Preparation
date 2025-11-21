@@ -22,7 +22,9 @@ const QuestionCard = ({ question }) => {
 
       <div className="q-footer">
         <span className="q-score">Score: {(question.upvotes || 0) - (question.downvotes || 0)}</span>
-        <Link to={`/questions/${question._id}`} className="btn btn-secondary">View</Link>
+        <Link to={`/questions/${question._id}`} className="btn btn-secondary">Details</Link>
+        <Link to={`/solve/${question._id}`} className="btn btn">Solve</Link>
+
       </div>
     </div>
   );
