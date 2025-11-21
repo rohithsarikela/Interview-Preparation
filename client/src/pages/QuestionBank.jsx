@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../api/apiClient";
 import QuestionCard from "../components/QuestionCard";
+import QuestionPageLayout from "../components/QuestionPageLayout";
 import Loader from "../components/Loader";
 import toast from "react-hot-toast";
 
@@ -44,56 +45,16 @@ const QuestionBank = () => {
   return (
     <div className="main-content">
       <h2>Question Bank</h2>
-      <form
-        onSubmit={handleApplyFilters}
-        style={{
-          marginTop: "1rem",
-          display: "grid",
-          gap: "0.75rem",
-          gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))"
-        }}
-      >
-        <input
-          className="input"
-          placeholder="Search by title..."
-          name="search"
-          value={filters.search}
-          onChange={handleFilterChange}
-        />
-        <select
-          className="input"
-          name="difficulty"
-          value={filters.difficulty}
-          onChange={handleFilterChange}
-        >
-          <option value="">All Difficulties</option>
-          <option value="Easy">Easy</option>
-          <option value="Medium">Medium</option>
-          <option value="Hard">Hard</option>
-        </select>
-        <input
-          className="input"
-          placeholder="Category (e.g. Arrays)"
-          name="category"
-          value={filters.category}
-          onChange={handleFilterChange}
-        />
-        <button className="btn" type="submit">
-          Apply
-        </button>
-      </form>
-
-      <div style={{ marginTop: "1.25rem" }}>
+      <div style={{ marginTop: "1rem" }}>
         {loading ? (
           <Loader />
-        ) : questions.length === 0 ? (
-          <p style={{ opacity: 0.7 }}>No questions found.</p>
         ) : (
-          <div className="grid">
-            {questions.map((q) => (
-              <QuestionCard key={q._id} question={q} />
-            ))}
-          </div>
+          <QuestionPageLayout
+            questions={questions}
+            filters={filters}
+            onFilterChange={handleFilterChange}
+            onApplyFilters={handleApplyFilters}
+          />
         )}
       </div>
     </div>
