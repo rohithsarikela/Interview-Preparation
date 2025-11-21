@@ -1,9 +1,15 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 const Navbar = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // hide navbar on auth pages
+  if (location.pathname === "/login" || location.pathname === "/register" || location.pathname.startsWith("/auth")) {
+    return null;
+  }
 
   const handleLogout = () => {
     logout();

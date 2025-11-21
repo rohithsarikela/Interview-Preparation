@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
 import heroImg from "../assets/image.png";
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 const Login = () => {
   const { login, loading } = useAuth();
@@ -30,6 +31,12 @@ const Login = () => {
 
       <main className="snout-right">
         <div className="snout-card">
+          <div className="auth-top">
+            <div className="toggle-tabs">
+              <button className="tab active">Login</button>
+              <button className="tab" onClick={() => navigate('/register')}>Sign Up</button>
+            </div>
+          </div>
           <h1 className="snout-title">Login</h1>
           <p className="snout-sub">Practice interview questions and track your progress.</p>
 
@@ -78,17 +85,17 @@ const Login = () => {
             <div className="divider"><span>Or</span></div>
 
             <div className="social-list">
-              <button type="button" className="social-btn" onClick={() => { window.location.href = '/api/auth/google'; }}>
+              <button type="button" className="social-btn" onClick={() => { window.location.href = `${API_BASE}/api/auth/google`; }}>
                 <span className="social-left">G</span>
                 Continue with Google
               </button>
 
-              <button type="button" className="social-btn" onClick={() => { window.location.href = '/api/auth/apple'; }}>
+              <button type="button" className="social-btn" onClick={() => { window.location.href = `${API_BASE}/api/auth/apple`; }}>
                 <span className="social-left"></span>
                 Continue with Apple
               </button>
 
-              <button type="button" className="social-btn" onClick={() => { window.location.href = '/api/auth/facebook'; }}>
+              <button type="button" className="social-btn" onClick={() => { window.location.href = `${API_BASE}/api/auth/facebook`; }}>
                 <span className="social-left">f</span>
                 Continue with Facebook
               </button>

@@ -330,6 +330,10 @@ a {
 .snout-card { width:100%; max-width:440px; background:white; border-radius:14px; padding:36px; box-shadow: 0 20px 50px rgba(2,6,23,0.12); }
 .snout-title { font-size:36px; margin:0 0 8px 0; font-weight:700; color:#0b1222; font-family: 'Segoe UI', Roboto, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial; }
 .snout-sub { margin:0 0 18px 0; color:#6b7280; }
+.auth-top { display:flex; justify-content:flex-end; margin-bottom:12px; }
+.toggle-tabs { display:inline-flex; background:#f3f4f6; border-radius:999px; padding:4px; }
+.toggle-tabs .tab { padding:8px 14px; border-radius:999px; background:transparent; border:none; cursor:pointer; color:#374151; font-weight:600; }
+.toggle-tabs .tab.active { background:white; box-shadow: 0 6px 20px rgba(2,6,23,0.08); }
 .snout-form { display:flex; flex-direction:column; gap:12px; }
 .field-label { font-size:14px; color:#111827; margin-bottom:6px; }
 .field-row { position:relative; }
